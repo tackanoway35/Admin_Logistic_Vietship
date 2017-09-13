@@ -1,12 +1,12 @@
 <?php
-namespace app\modules\goikhachhang\controllers;
+namespace app\modules\coupon\controllers;
 
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\widgets\ActiveForm;
 
 use yii\easyii\components\Controller;
-use app\modules\goikhachhang\models\Goikhachhang;
+use app\modules\coupon\models\Coupon;
 use app\modules\khuvuc\models\Khuvuc;
 
 class AController extends Controller
@@ -14,7 +14,7 @@ class AController extends Controller
     public function actionIndex()
     {
         $data = new ActiveDataProvider([
-            'query' => Goikhachhang::find(),
+            'query' => Coupon::find(),
         ]);
 
         return $this->render('index', [
@@ -24,7 +24,7 @@ class AController extends Controller
 
     public function actionCreate()
     {
-        $model = new Goikhachhang;
+        $model = new Coupon;
         //Khởi tạo mảng dịch vụ phụ trội
         $model_dvpt = [];
         $model_dvpt['dvpt1'] = [
@@ -97,39 +97,21 @@ class AController extends Controller
                 $model->khu_vuc = NULL;
             }
             
-            //Xử lý áp dụng gói KM theo ngày
-            if($dataPost[$model->formName()]['thoi_gian_ap_dung'] == 'day')
-            {
-                $model->day_ngay_bat_dau = strtotime($dataPost['day_gkh_begin']);
-                $model->day_ngay_ket_thuc = strtotime($dataPost['day_gkh_end']);
-                $model->hour_gio_ap_dung = NULL;
-                $model->hour_thoi_gian_ap_dung = NULL;
-            }else if($dataPost[$model->formName()]['thoi_gian_ap_dung'] == 'hour')
-            {
-                $model->hour_thoi_gian_ap_dung = time();
-            }
+            //Xử lý thời gian áp dụng
+            $model->ngay_bat_dau = strtotime($dataPost['ngay_bat_dau']);
+            $model->ngay_ket_thuc = strtotime($dataPost['ngay_ket_thuc']);
             
-            //Xử lý áp dụng gói KM khi đăng ký mới
-            if($dataPost[$model->formName()]['new_gkh'] == 1) //Có áp dụng -> set ngày bắt đầu và kết thúc
-            {
-                $model->new_ngay_bat_dau = strtotime($dataPost['new_gkh_begin']);
-                $model->new_ngay_ket_thuc = strtotime($dataPost['new_gkh_end']);
-            }else
-            {
-                $model->new_ngay_bat_dau = NULL;
-                $model->new_ngay_ket_thuc = NULL;
-            }
             if(Yii::$app->request->isAjax){
                 Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
             }
             else{
                 if($model->save()){
-                    $this->flash('success', 'Tạo gói khách hàng thành công!');
+                    $this->flash('success', 'Tạo coupon thành công!');
                     return $this->redirect(['/admin/'.$this->module->id]);
                 }
                 else{
-                    $this->flash('error', 'Tạo gói khách hàng thất bại! Hãy kiểm tra lại thông tin vừa khởi tạo!');
+                    $this->flash('error', 'Tạo coupon thất bại! Hãy kiểm tra lại thông tin vừa khởi tạo!');
                     return $this->refresh();
                 }
             }
@@ -143,7 +125,7 @@ class AController extends Controller
 
     public function actionEdit($id)
     {
-        $model = Goikhachhang::findOne($id);
+        $model = Coupon::findOne($id);
         //Xử lý JSON dich_vu_phu_troi và khu_vuc;
         if($model->dich_vu_phu_troi)
         {
@@ -192,26 +174,8 @@ class AController extends Controller
         $model->dvpt = $arr_dvpt;
         $model->kv = $arr_kv;
         
-        //Xử lý áp dụng KM theo ngày và theo giờ
-        if($model->hour_gio_ap_dung) //Áp dụng theo giờ
-        {
-            $model->thoi_gian_ap_dung = 'hour';
-        }else
-        {
-            $model->thoi_gian_ap_dung = 'day';
-        }
-        
-        //Xử lý áp dụng KM đăng ký mới
-        if($model->new_ngay_bat_dau && $model->new_ngay_ket_thuc)
-        {
-            $model->new_gkh = 1;
-        }else
-        {
-            $model->new_gkh = 0;
-        }
-        
         if($model === null){
-            $this->flash('error', "Không tìm thấy gói khách hàng nào");
+            $this->flash('error', "Không tìm thấy coupon nào");
             return $this->redirect(['/admin/'.$this->module->id]);
         }
 
@@ -249,40 +213,19 @@ class AController extends Controller
                 $model->khu_vuc = NULL;
             }
             
-            //Xử lý áp dụng gói KM theo ngày
-            if($dataPost[$model->formName()]['thoi_gian_ap_dung'] == 'day')
-            {
-                $model->day_ngay_bat_dau = strtotime($dataPost['day_gkh_begin']);
-                $model->day_ngay_ket_thuc = strtotime($dataPost['day_gkh_end']);
-                $model->hour_gio_ap_dung = NULL;
-                $model->hour_thoi_gian_ap_dung = NULL;
-            }else if($dataPost[$model->formName()]['thoi_gian_ap_dung'] == 'hour')
-            {
-                $model->hour_thoi_gian_ap_dung = time();
-                $model->day_ngay_bat_dau = NULL;
-                $model->day_ngay_ket_thuc = NULL;
-            }
-            
-            //Xử lý áp dụng gói KM khi đăng ký mới
-            if($dataPost[$model->formName()]['new_gkh'] == 1) //Có áp dụng -> set ngày bắt đầu và kết thúc
-            {
-                $model->new_ngay_bat_dau = strtotime($dataPost['new_gkh_begin']);
-                $model->new_ngay_ket_thuc = strtotime($dataPost['new_gkh_end']);
-            }else
-            {
-                $model->new_ngay_bat_dau = NULL;
-                $model->new_ngay_ket_thuc = NULL;
-            }
+            //Xử lý thời gian áp dụng
+            $model->ngay_bat_dau = strtotime($dataPost['ngay_bat_dau']);
+            $model->ngay_ket_thuc = strtotime($dataPost['ngay_ket_thuc']);
             if(Yii::$app->request->isAjax){
                 Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
             }
             else{
                 if($model->save()){
-                    $this->flash('success', "Cập nhật gói khách hàng thành công");
+                    $this->flash('success', "Cập nhật coupon thành công");
                 }
                 else{
-                    $this->flash('error', "Cập nhật gói khách hàng thất bại. Hãy kiểm tra lại thông tin!");
+                    $this->flash('error', "Cập nhật coupon thất bại. Hãy kiểm tra lại thông tin!");
                 }
                 return $this->refresh();
             }
@@ -296,11 +239,11 @@ class AController extends Controller
 
     public function actionDelete($id)
     {
-        if(($model = Goikhachhang::findOne($id))){
+        if(($model = Coupon::findOne($id))){
             $model->delete();
         } else {
-            $this->error = "Không tìm thấy gói khách hàng nào";
+            $this->error = "Không tìm thấy coupon nào";
         }
-        return $this->formatResponse("Xóa gói khách hàng thành công");
+        return $this->formatResponse("Xóa coupon thành công");
     }
 }

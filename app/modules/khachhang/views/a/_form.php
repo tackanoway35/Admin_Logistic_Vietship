@@ -10,6 +10,7 @@ use app\modules\goikhachhang\models\Goikhachhang;
 use unclead\multipleinput\MultipleInput;
 use app\modules\duongpho\models\Duongpho;
 use richardfan\widget\JSRegister;
+use yii\bootstrap\Modal;
 
 $module = $this->context->module->id;
 ?>
@@ -22,6 +23,10 @@ $module = $this->context->module->id;
         margin-top : -10px !important;
     }
 </style>-->
+<?php
+ Modal::begin();
+ Modal::end();
+?>
 <div class="row">
     <div class="col-md-12 col-xs-12 col-sm-12">
         <div class="panel">
@@ -140,25 +145,34 @@ $module = $this->context->module->id;
                         <?php
                             $list_duong_pho = ArrayHelper::map(Duongpho::find()->all(), 'dp_id', 'ten_pho');
                             echo $form->field($model_dclh, 'arr_dclh')->widget(MultipleInput::className(), [
-                                'id' => 'tte',
+                                'id' => 'tte',                                
                                 'sortable' => true,
                                 'columns' => [
                                     [
                                         'name'  => 'ten_goi_nho',
                                         'options' => [
                                             'placeholder' => 'Tên gợi nhớ. VD: kho1',
+                                            'required' => true,
+                                            'oninvalid' => "this.setCustomValidity('Bạn chưa nhập tên gợi nhớ')",
+                                            'oninput' => "setCustomValidity('')",                                            
                                         ]
                                     ],
                                     [
                                         'name'  => 'ten_nguoi_ban_giao_hang',
                                         'options' => [
-                                            'placeholder' => 'Tên người bàn giao'
+                                            'placeholder' => 'Tên người bàn giao',
+                                            'required' => true,
+                                            'oninvalid' => "this.setCustomValidity('Bạn chưa nhập người bàn giao hàng')",
+                                            'oninput' => "setCustomValidity('')"
                                         ]
                                     ],
                                     [
                                         'name'  => 'so_dien_thoai',
                                         'options' => [
-                                            'placeholder' => 'Số điện thoại'
+                                            'placeholder' => 'Số điện thoại',
+                                            'required' => true,
+                                            'oninvalid' => "this.setCustomValidity('Bạn chưa nhập số điện thoại')",
+                                            'oninput' => "setCustomValidity('')"
                                         ]
                                     ],
                                     [
