@@ -78,7 +78,8 @@ $module = $this->context->module->id;
                                             </td>
                                             <td style="text-align: center">
                                                 <div class="btn-group btn-group-sm" role="group">
-                                                    <a href="<?= Url::to(['/admin/'.$module.'/a/delete', 'id' => $item->primaryKey]) ?>" class="btn btn-default confirm-delete" title="Xóa khu vực"><span class="glyphicon glyphicon-trash"></span></a>
+                                                    <a href="<?= Url::to(['/admin/'.$module.'/a/edit', 'id' => $item->primaryKey]) ?>" class="btn btn-default" title="Sửa phố"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                    <a href="<?= Url::to(['/admin/'.$module.'/a/delete', 'id' => $item->primaryKey]) ?>" class="btn btn-default confirm-delete" title="Xóa phố" onclick="return confirm('Bạn muốn xóa phố <?= $item->ten_pho;?>?');"><span class="glyphicon glyphicon-trash"></span></a>
                                                 </div>
                                             </td>
                                         </tr>

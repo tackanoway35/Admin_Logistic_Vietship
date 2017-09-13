@@ -44,7 +44,8 @@ $module = $this->context->module->id;
                                 <td><a  style="color : blue !important" href="<?= Url::to(['/admin/'.$module.'/a/edit/', 'id' => $item->primaryKey]) ?>"><?= $item->ten_quan_huyen ?></a></td>
                                 <td style="text-align: center">
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a href="<?= Url::to(['/admin/'.$module.'/a/delete', 'id' => $item->primaryKey]) ?>" class="btn btn-default confirm-delete" title="Xóa quận huyện"><span class="glyphicon glyphicon-trash"></span></a>
+                                        <a href="<?= Url::to(['/admin/'.$module.'/a/edit', 'id' => $item->primaryKey]) ?>" class="btn btn-default" title="Sửa quận huyện"><span class="glyphicon glyphicon-pencil"></span></a>
+                                        <a href="<?= Url::to(['/admin/'.$module.'/a/delete', 'id' => $item->primaryKey]) ?>" class="btn btn-default confirm-delete" title="Xóa quận huyện" onclick="return confirm('Bạn muốn xóa quận / huyện <?= $item->ten_quan_huyen;?>?');"><span class="glyphicon glyphicon-trash"></span></a>
                                     </div>
                                 </td>
                             </tr>

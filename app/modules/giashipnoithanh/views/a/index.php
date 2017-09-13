@@ -86,8 +86,8 @@ $module = $this->context->module->id;
                                             </td>
                                             <td style="text-align: center">
                                                 <div class="btn-group btn-group-sm" role="group">
-                                                    <a href="<?= Url::to(['/admin/'.$module.'/a/edit', 'id' => $item->primaryKey]) ?>" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                    <a href="<?= Url::to(['/admin/'.$module.'/a/delete', 'id' => $item->primaryKey]) ?>" class="btn btn-default confirm-delete" title="Xóa khu vực"><span class="glyphicon glyphicon-trash"></span></a>
+                                                    <a href="<?= Url::to(['/admin/'.$module.'/a/edit', 'id' => $item->primaryKey]) ?>" class="btn btn-default" title="Sửa giá ship nội thành"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                    <a href="<?= Url::to(['/admin/'.$module.'/a/delete', 'id' => $item->primaryKey]) ?>" class="btn btn-default confirm-delete" title="Xóa giá ship nội thành" onclick="return confirm('Bạn muốn xóa giá ship nội thành này?');"><span class="glyphicon glyphicon-trash"></span></a>
                                                 </div>
                                             </td>
                                         </tr>

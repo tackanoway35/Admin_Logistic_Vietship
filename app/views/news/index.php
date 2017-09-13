@@ -3,6 +3,7 @@ use yii\easyii\modules\news\api\News;
 use yii\easyii\modules\page\api\Page;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\bootstrap\Modal;
 
 $page = Page::get('page-news');
 
@@ -11,7 +12,6 @@ $this->params['breadcrumbs'][] = $page->model->title;
 ?>
 <h1><?= $page->seo('h1', $page->title) ?></h1>
 <br/>
-
 <?php foreach($news as $item) : ?>
     <div class="row">
         <div class="col-md-2">
