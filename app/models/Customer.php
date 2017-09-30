@@ -12,7 +12,6 @@ class Customer extends ActiveRecord
     public function rules()
     {
         return [
-            ['first_name', 'required'],
             [['first_name', 'last_name'], 'string']
         ];
     }

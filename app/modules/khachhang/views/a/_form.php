@@ -379,7 +379,7 @@ $module = $this->context->module->id;
                     var ten_pho_value = $(this).val();
                     var ten_pho_text = $(this).text().toLowerCase();
                     after_result_search = dia_chi_text_value.search(ten_pho_text);
-                    if(after_result_search > 0)
+                    if(after_result_search >= 0)
                     {
                         $(ten_pho_element).val(ten_pho_value).trigger("change");
                     }
@@ -406,7 +406,7 @@ $module = $this->context->module->id;
                             var ten_pho_value = $(this).val();
                             var ten_pho_text = $(this).text().toLowerCase();
                             after_result_search = dia_chi_text_value.search(ten_pho_text);
-                            if(after_result_search > 0)
+                            if(after_result_search >= 0)
                             {
                                 $(ten_pho_element).val(ten_pho_value).trigger("change");
                             }

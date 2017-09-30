@@ -21,6 +21,18 @@ class AController extends Controller
             'data' => $data,
         ]);
     }
+    
+    //Function random string include string and number
+    public function randomString($length, $tien_to) {
+            $str = "";
+            $characters = array_merge(range('a','z'), range('0','9'));
+            $max = count($characters) - 1;
+            for ($i = 0; $i < $length; $i++) {
+                    $rand = mt_rand(0, $max);
+                    $str .= $characters[$rand];
+            }
+            return $tien_to.$str;
+    } 
 
     public function actionCreate()
     {
@@ -54,6 +66,7 @@ class AController extends Controller
         foreach($khuvuc as $item)
         {
             $model_kv['kv'.$item->kv_id] = [
+                'id' => $item->kv_id,
                 'content' => $item->ten_khu_vuc,
                 'key' => 'kv'.$item->kv_id,
                 'value' => 0
@@ -65,21 +78,25 @@ class AController extends Controller
         
         if ($model->load(Yii::$app->request->post())) {
             $dataPost = Yii::$app->request->post();
+//            echo '<pre>';
+//            print_r($dataPost);
+//            echo '</pre>';
+//            exit();
             //Xử lý dịch vụ phụ trội JSON
-            if(isset($dataPost['dvpt']))
-            {
-                foreach($dataPost['dvpt'] as $key => $value)
-                {
-                    if($model_dvpt[$key])
-                    {
-                        $model_dvpt[$key]['value'] = 1;
-                    }
-                }
-                $model->dich_vu_phu_troi = json_encode($model_dvpt, JSON_UNESCAPED_UNICODE);
-            }else
-            {
-                $model->dich_vu_phu_troi = NULL;
-            }
+//            if(isset($dataPost['dvpt']))
+//            {
+//                foreach($dataPost['dvpt'] as $key => $value)
+//                {
+//                    if($model_dvpt[$key])
+//                    {
+//                        $model_dvpt[$key]['value'] = 1;
+//                    }
+//                }
+//                $model->dich_vu_phu_troi = json_encode($model_dvpt, JSON_UNESCAPED_UNICODE);
+//            }else
+//            {
+//                $model->dich_vu_phu_troi = NULL;
+//            }
             
             //Xử lý khu vực JSON
             if(isset($dataPost['kv']))
@@ -100,6 +117,27 @@ class AController extends Controller
             //Xử lý thời gian áp dụng
             $model->ngay_bat_dau = strtotime($dataPost['ngay_bat_dau']);
             $model->ngay_ket_thuc = strtotime($dataPost['ngay_ket_thuc']);
+            
+            //Xử lý gói dịch vụ
+            $goi_dich_vu = [];
+            foreach($dataPost['Coupon']['gdv_id'] as $gdv)
+            {
+                $goi_dich_vu[] = $gdv;
+            }
+            $model->gdv_id = json_encode($goi_dich_vu, JSON_UNESCAPED_UNICODE);
+            
+            //Xử lý mã coupon
+            $condition = 1;
+            while($condition == 1)
+            {
+                $random_ma_coupon = $this->randomString(8, $dataPost['Coupon']['tien_to']);
+                $check_ma_coupon = count(Coupon::find()->where(['ma_coupon' => $random_ma_coupon])->asArray()->one());
+                if($check_ma_coupon == 0) //Thêm mới
+                {
+                    $model->ma_coupon = $random_ma_coupon;
+                    $condition = 0;
+                }
+            }
             
             if(Yii::$app->request->isAjax){
                 Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -165,6 +203,7 @@ class AController extends Controller
             foreach($khuvuc as $item)
             {
                 $arr_kv['kv'.$item->kv_id] = [
+                    'id' => $item->kv_id,
                     'content' => $item->ten_khu_vuc,
                     'key' => 'kv'.$item->kv_id,
                     'value' => 0
@@ -173,6 +212,7 @@ class AController extends Controller
         }
         $model->dvpt = $arr_dvpt;
         $model->kv = $arr_kv;
+        $model->gdv_id = json_decode($model->gdv_id, true);
         
         if($model === null){
             $this->flash('error', "Không tìm thấy coupon nào");
@@ -216,6 +256,14 @@ class AController extends Controller
             //Xử lý thời gian áp dụng
             $model->ngay_bat_dau = strtotime($dataPost['ngay_bat_dau']);
             $model->ngay_ket_thuc = strtotime($dataPost['ngay_ket_thuc']);
+            
+            //Xử lý gói dịch vụ
+            $goi_dich_vu = [];
+            foreach($dataPost['Coupon']['gdv_id'] as $gdv)
+            {
+                $goi_dich_vu[] = $gdv;
+            }
+            $model->gdv_id = json_encode($goi_dich_vu, JSON_UNESCAPED_UNICODE);
             if(Yii::$app->request->isAjax){
                 Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
                 return ActiveForm::validate($model);

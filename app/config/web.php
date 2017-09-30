@@ -12,6 +12,7 @@ $config = [
     'language' => 'en-US',
     'runtimePath' => $webroot . '/runtime',
     'vendorPath' => $webroot . '/vendor',
+    'timeZone' => 'Asia/Ho_Chi_Minh',
     'components' => [
         
         'request' => [

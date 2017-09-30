@@ -11,6 +11,7 @@ use app\modules\goidichvu\models\Goidichvu;
 use kartik\checkbox\CheckboxX;
 use richardfan\widget\JSRegister;
 use app\modules\khachhang\models\Khachhang;
+use yii\helpers\ArrayHelper;
 
 $module = $this->context->module->id;
 ?>
@@ -54,20 +55,25 @@ $module = $this->context->module->id;
                         <?= $form->field($model, 'mo_ta')->textarea(); ?>
                     </div>
                 </div>
-                                                
+                
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-6">
+                        <?= $form->field($model, 'ma_coupon')?>
+                    </div>
+                    <div class="col-md-6">
                         <?=
                             $form->field($model, 'gdv_id')->widget(Select2::className(), [
                                 'data' => ArrayHelper::map(Goidichvu::find()->all(), 'gdv_id', 'ten_goi_dich_vu'),
                                 'options' => [
-                                    'placeholder' => 'Chọn gói dịch vụ áp dụng',
-                                    'multiple' => true
+                                    'placeholder' => 'Chọn gói dịch vụ áp dụng'
                                 ]
                             ])
-                        ?>     
+                        ?>                        
                     </div>
-                    <div class="col-md-3">
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4">
                         <?=
                             $form->field($model, 'hinh_thuc_khuyen_mai')->widget(Select2::className(), [
                                 'data' => [
@@ -83,16 +89,12 @@ $module = $this->context->module->id;
                         ?>
                     </div>
                     
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <?= $form->field($model, 'gia_tri')?>
                     </div>
                     
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <?= $form->field($model, 'gioi_han')?>
-                    </div>
-                    
-                    <div class="col-md-2">
-                        <?= $form->field($model, 'so_luong_coupon')?>
                     </div>
                 </div>
                 
@@ -124,7 +126,7 @@ HTML;
                                         'layout' => $dateRanger,
                                         'pluginOptions' => [
                                             'autoclose' => true,
-                                            'format' => 'dd-mm-yyyy'
+                                            'format' => 'dd-M-yyyy'
                                         ]
                                     ]);
                                 }else
@@ -140,7 +142,7 @@ HTML;
                                         'layout' => $dateRanger,
                                         'pluginOptions' => [
                                             'autoclose' => true,
-                                            'format' => 'dd-mm-yyyy'
+                                            'format' => 'dd-M-yyyy'
                                         ]
                                     ]);
                                 }
@@ -150,6 +152,45 @@ HTML;
         
                 <div class="row" style="margin-top: 20px">
                     <div class="col-md-6">
+                        <?php
+                            if($model->chi_giam_dich_vu_phu_troi)
+                            {
+                                echo $form->field($model, 'chi_giam_dich_vu_phu_troi')->widget(CheckboxX::classname(), [
+                                    'autoLabel'=>true,
+                                    'value' => $model->chi_giam_dich_vu_phu_troi,
+                                    'pluginOptions' => [ 'threeState' => false ]
+                                ])->label(false);
+                            }else
+                            {
+                                echo $form->field($model, 'chi_giam_dich_vu_phu_troi')->widget(CheckboxX::classname(), [
+                                    'autoLabel'=>true,
+                                    'pluginOptions'=>['threeState'=>false]
+                                ])->label(false);
+                            }
+                        ?>
+                        <legend><small>Dịch vụ phụ trội</small></legend>
+                        <?php foreach($model->dvpt as $item):?>
+                            <div class="form-group has-success">
+                                <label class="cbx-label" for="<?= $item['key']?>">
+                                <?= CheckboxX::widget([
+                                    'name' => 'dvpt['.$item['key'].']',
+                                    'value' => $item['value'],
+                                    'initInputType' => CheckboxX::INPUT_CHECKBOX,
+                                    'options'=>['id' => $item['key']],
+                                    'pluginOptions' => [
+                                        'theme' => 'krajee-flatblue',
+                                        'enclosedLabel' => true,
+                                        'threeState' => false
+                                    ]
+                                ]); ?>
+                                <?= $item['content']?>
+                                </label>
+                            </div>
+                        <?php endforeach;?>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        
                         <p>Lựa chọn khu vực để giới hạn áp dụng gói khách hàng</p>
                         
                         <legend><small>Khu vực</small></legend>
