@@ -31,7 +31,7 @@ $module = $this->context->module->id;
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <?= $form->field($model, 'ten_goi')?>
+                        <?= $form->field($model, 'ten_goi')->textInput()->label('Tên gói*')?>
                     </div>
                     <div class="col-md-6">
                         <?=
@@ -39,13 +39,21 @@ $module = $this->context->module->id;
                                 'data' => [
                                     'Giảm theo %' => 'Giảm theo %',
                                     'Giảm cước' => 'Giảm cước',
+                                    'Tăng cước' => 'Tăng cước',
                                     'Đồng giá' => 'Đồng giá',
-                                    'Tặng tiền' => 'Tặng tiền'
                                 ],
                                 'options' => [
                                     'placeholder' => "Chọn hình thức khuyến mại"
                                 ]
-                            ])
+                            ])->label('Hình thức khuyến mại*')
+                        ?>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <?=
+                            $form->field($model, 'mo_ta')->textarea()->label('Mô tả*');
                         ?>
                     </div>
                 </div>
@@ -57,18 +65,21 @@ $module = $this->context->module->id;
                                 'data' => ArrayHelper::map(Goidichvu::find()->all(), 'gdv_id', 'ten_goi_dich_vu'),
                                 'options' => [
                                     'placeholder' => 'Chọn gói dịch vụ áp dụng'
+                                ],
+                                'pluginOptions' => [
+                                    'multiple' => true
                                 ]
-                            ])
+                            ])->label('Gói dịch vụ*')
                         ?>
                     </div>
                     
                     <div class="col-md-6">
-                        <?= $form->field($model, 'gia_tri')?>
+                        <?= $form->field($model, 'gia_tri')->textInput()->label('Giá trị áp dụng*')?>
                     </div>
                 </div>
         
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <?php
                             if($model->chi_giam_dich_vu_phu_troi)
                             {
@@ -85,6 +96,19 @@ $module = $this->context->module->id;
                                 ])->label(false);
                             }
                         ?>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= 
+                            $form->field($model, 'muc_do_uu_tien')->textInput(['placeholder' => 'Mức độ ưu tiên: 1, 2, 3...'])->label('Mức độ ưu tiên*')
+                        ?>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
                         <legend><small>Dịch vụ phụ trội</small></legend>
                         <?php foreach($model->dvpt as $item):?>
                             <div class="form-group has-success">
@@ -107,10 +131,7 @@ $module = $this->context->module->id;
                     </div>
                     
                     <div class="col-md-6">
-                        
-                        <p>Lựa chọn khu vực để giới hạn áp dụng gói khách hàng</p>
-                        
-                        <legend><small>Khu vực</small></legend>
+                        <legend><small>Khu vực áp dụng</small></legend>
                         <?php foreach($model->kv as $item):?>
                             <div class="form-group">
                             <label class="cbx-label" for="<?= $item['key']?>">
@@ -131,6 +152,8 @@ $module = $this->context->module->id;
                         <?php endforeach;?>
                     </div>
                 </div>
+                    
+                    
             </div>
         </div>
     </div>

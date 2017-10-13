@@ -22,8 +22,7 @@ class Coupon extends \yii\easyii\components\ActiveRecord
             [['dich_vu_phu_troi', 'khu_vuc', 'chi_giam_dich_vu_phu_troi'], 'string'],
             [['gia_tri', 'gioi_han', 'so_luong_coupon'], 'integer', 'message' => "{attribute} phải là kiểu số"],
             [['so_luong_coupon'], 'integer', 'min' => 1, 'max' => 1000, 'tooBig' => 'Số lượng coupon cho phép ít hơn 1000', 'tooSmall' => 'Số lượng coupon cho phép nhiều hơn 0'],
-            [['ma_coupon', 'ten_coupon', 'mo_ta', 'ap_dung_cung_goi_khach_hang'], 'safe'],
-            
+            [['kh_id', 'ma_coupon', 'ten_coupon', 'mo_ta'], 'safe']
         ];
     }
 
@@ -39,8 +38,7 @@ class Coupon extends \yii\easyii\components\ActiveRecord
             'ten_coupon' => 'Tên coupon',
             'mo_ta' => 'Mô tả',
             'tien_to' => 'Tiền tố*',
-            'ap_dung_cung_goi_khach_hang' => 'Áp dụng cùng gói khách hàng'
-//            'kh_id' => 'Khách hàng'
+            'kh_id' => 'Khách hàng'
         ];
     }
     

@@ -3,6 +3,9 @@ use app\modules\goikhachhang\models\Goikhachhang;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\modules\goidichvu\models\Goidichvu;
+use kartik\switchinput\SwitchInput;
+use richardfan\widget\JSRegister;
+use yii\base\Component;
 
 $this->title = "Gói khách hàng";
 
@@ -49,7 +52,13 @@ $module = $this->context->module->id;
                                             Gói áp dụng
                                         </th>
                                         <th>
+                                            Khu vực
+                                        </th>
+                                        <th>
                                             Giá trị
+                                        </th>
+                                        <th>
+                                            Trạng thái
                                         </th>
                                         <th width="120px">
                                             
@@ -75,8 +84,30 @@ $module = $this->context->module->id;
                                                 ?>
                                             </td>
                                             <td>
-                                                <?=
-                                                    Goidichvu::find()->where(['gdv_id' => $item->gdv_id])->one()['ten_goi_dich_vu'];
+                                                <?php
+                                                    $str_gdv = '';
+                                                    $arr_gdv = json_decode($item->gdv_id, true);
+                                                    foreach($arr_gdv as $gdv_id)
+                                                    {
+                                                        $str_gdv .= Goidichvu::find()->where(['gdv_id' => $gdv_id])->one()['ten_goi_dich_vu'].'<br>';
+                                                    }
+                                                    echo $str_gdv;
+                                                ?>
+                                            </td>
+                                            
+                                            <td>
+                                                <?php
+                                                    $str_kv = '';
+                                                    $arr_kv = json_decode($item->khu_vuc, true);
+                                                    foreach($arr_kv as $kv)
+                                                    {
+                                                        if($kv['value'] == 1)
+                                                        {
+                                                            $str_kv .= app\modules\khuvuc\models\Khuvuc::find()->where(['kv_id' => $kv['id']])->one()['ten_khu_vuc'].'<br>';
+                                                        }
+                                                        
+                                                    }
+                                                    echo $str_kv;
                                                 ?>
                                             </td>
                                             
@@ -97,6 +128,22 @@ $module = $this->context->module->id;
                                                         $giatri = "Tặng ".$item->gia_tri.' VNĐ';
                                                     }
                                                     echo $giatri;
+                                                ?>
+                                            </td>
+                                            
+                                            <td>
+                                                <?=
+                                                    SwitchInput::widget([
+                                                        'name' => 'status',
+                                                        'value' => $item->status,
+                                                        'pluginOptions' => [
+                                                            'size' => 'small'
+                                                        ],
+                                                        'pluginEvents' => [
+                                                            "init.bootstrapSwitch" => "function() { console.log('init'); }",
+                                                            "switchChange.bootstrapSwitch" => "function() { setStatus(".$item->gkh_id.") }",
+                                                        ]
+                                                    ])
                                                 ?>
                                             </td>
                                             
@@ -123,3 +170,22 @@ $module = $this->context->module->id;
     </div>
 </div>
 
+<?php JSRegister::begin();?>
+    <script>
+        function setStatus(gkh_id)
+        {
+            var url = '<?= Url::to(['/admin/goikhachhang/a/changestatus'])?>'
+            var dataPost = { gkh_id : gkh_id };
+            $.post(
+                url,
+                dataPost
+            )
+            .done((response) => {
+                console.log(response);
+            })
+            .fail((e) => {
+                console.log(e);
+            })
+        }
+    </script>
+<?php JSRegister::end();?>

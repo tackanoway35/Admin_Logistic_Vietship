@@ -52,7 +52,7 @@ $module = $this->context->module->id;
                                         <th>
                                             Khu vực
                                         </th>
-                                        <th width="120px">
+                                        <th>
                                             
                                         </th>
                                     </tr>

@@ -15,7 +15,7 @@ $this->title = "Sửa thông tin đơn hàng";
                 <?= $this->render('_menu') ?>                
             </div>
         </div>
-        <?= $this->render('_form', ['model' => $model]) ?>
+        <?= $this->render('_form_edit', ['model' => $model]) ?>
     </div>
 </div>
 

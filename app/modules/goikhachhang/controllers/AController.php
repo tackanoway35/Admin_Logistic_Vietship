@@ -9,8 +9,20 @@ use yii\easyii\components\Controller;
 use app\modules\goikhachhang\models\Goikhachhang;
 use app\modules\khuvuc\models\Khuvuc;
 
+use yii\easyii\behaviors\StatusController;
+
 class AController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => StatusController::className(),
+                'model' => Goikhachhang::className()
+            ]
+        ];
+    }
+    
     public function actionIndex()
     {
         $data = new ActiveDataProvider([
@@ -54,6 +66,7 @@ class AController extends Controller
         foreach($khuvuc as $item)
         {
             $model_kv['kv'.$item->kv_id] = [
+                'id' => $item->kv_id,
                 'content' => $item->ten_khu_vuc,
                 'key' => 'kv'.$item->kv_id,
                 'value' => 0
@@ -65,6 +78,8 @@ class AController extends Controller
         
         if ($model->load(Yii::$app->request->post())) {
             $dataPost = Yii::$app->request->post();
+            //Xử lý gói dịch vụ
+            $model->gdv_id = json_encode($dataPost[$model->formName()]['gdv_id'], JSON_UNESCAPED_UNICODE);
             //Xử lý dịch vụ phụ trội JSON
             if(isset($dataPost['dvpt']))
             {
@@ -144,6 +159,8 @@ class AController extends Controller
     public function actionEdit($id)
     {
         $model = Goikhachhang::findOne($id);
+        //Xử lý Gói dịch vụ
+        $model->gdv_id = json_decode($model->gdv_id, true);
         //Xử lý JSON dich_vu_phu_troi và khu_vuc;
         if($model->dich_vu_phu_troi)
         {
@@ -183,6 +200,7 @@ class AController extends Controller
             foreach($khuvuc as $item)
             {
                 $arr_kv['kv'.$item->kv_id] = [
+                    'id' => $item->kv_id,
                     'content' => $item->ten_khu_vuc,
                     'key' => 'kv'.$item->kv_id,
                     'value' => 0
@@ -217,15 +235,29 @@ class AController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             $dataPost = Yii::$app->request->post();
+            //Xử lý gói dịch vụ
+            $model->gdv_id = json_encode($dataPost[$model->formName()]['gdv_id']);
+//            echo '<pre>';
+//            print_r($arr_dvpt);
+//            
+//            print_r($dataPost['dvpt']);
+//            echo '</pre>';
+//            exit();
             //Xử lý dịch vụ phụ trội JSON
             if(isset($dataPost['dvpt']))
             {
-                foreach($dataPost['dvpt'] as $key => $value)
+                foreach($arr_dvpt as $item)
                 {
-                    if($arr_dvpt[$key])
+                    $item['value'] = 0;
+                    foreach($dataPost['dvpt'] as $key => $value)
                     {
-                        $arr_dvpt[$key]['value'] = 1;
+                        if($item['key'] == $key)
+                        {
+                            $item['value'] = 1;
+                        }
                     }
+                    $arr_dvpt[$item['key']] = $item;                            
+            
                 }
                 $model->dich_vu_phu_troi = json_encode($arr_dvpt, JSON_UNESCAPED_UNICODE);
             }else
@@ -236,13 +268,19 @@ class AController extends Controller
             //Xử lý khu vực JSON
             if(isset($dataPost['kv']))
             {
-                foreach($dataPost['kv'] as $key => $value)
+                foreach($arr_kv as $item)
                 {
-                    if($arr_kv[$key])
+                    $item['value'] = 0;
+                    foreach($dataPost['kv'] as $key => $value)
                     {
-                        $arr_kv[$key]['value'] = 1;
+                        if($item['key'] == $key)
+                        {
+                            $item['value'] = 1;
+                        }
                     }
+                    $arr_kv[$item['key']] = $item;
                 }
+                
                 $model->khu_vuc = json_encode($arr_kv, JSON_UNESCAPED_UNICODE);
             }else
             {
@@ -302,5 +340,30 @@ class AController extends Controller
             $this->error = "Không tìm thấy gói khách hàng nào";
         }
         return $this->formatResponse("Xóa gói khách hàng thành công");
+    }
+    
+    public function actionChangestatus()
+    {
+        if(\Yii::$app->request->post())
+        {
+            $dataPost = \Yii::$app->request->post();
+            $id = $dataPost['gkh_id'];
+            $gkh = Goikhachhang::findOne($id);
+            if($gkh->status == 0)
+            {
+                $gkh->status = 1;
+            }else if($gkh->status == 1)
+            {
+                $gkh->status = 0;
+            }
+            if($gkh->save(false))
+            {
+                echo 'Change status success!';
+            }else
+            {
+                echo 'Change status fail!';
+            }
+        }
+        
     }
 }

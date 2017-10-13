@@ -6,6 +6,7 @@ use Yii;
 use yii\easyii\modules\page\models\Page;
 use yii\web\Controller;
 
+
 class SiteController extends Controller
 {
     public function actions()
@@ -19,9 +20,10 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        $baseUrl = \yii\helpers\Url::base(true);
         if(!Yii::$app->getModule('admin')->installed){
             return $this->redirect(['/install/step1']);
         }
-        return $this->render('index');
+        return $this->redirect($baseUrl.'/admin');
     }
 }

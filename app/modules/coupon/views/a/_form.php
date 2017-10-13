@@ -29,22 +29,11 @@ $module = $this->context->module->id;
             </header>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-4">
-                        <?=
-                            $form->field($model, 'kh_id')->widget(Select2::className(), [
-                                'data' => ArrayHelper::map(Khachhang::find()->all(), 'kh_id', 'ten_hien_thi'),
-                                'options' => [
-                                    'placeholder' => 'Chọn khách hàng áp dụng...'
-                                ]
-                            ])
-                        ?>
-                    </div>
-                    
-                    <div class="col-md-6">
+                    <div class="col-md-8">
                         <?= $form->field($model, 'ten_coupon');?>
                     </div>
                     
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <?= $form->field($model, 'tien_to')?>
                     </div>
                 </div>
@@ -96,7 +85,7 @@ $module = $this->context->module->id;
                     </div>
                 </div>
                 
-                <div class="row">
+                <div class="row" style="margin-bottom: 20px">
                     <div class="col-md-12">
                         <?php
                             $dateRanger = <<< HTML
@@ -147,12 +136,31 @@ HTML;
                         ?>
                     </div>
                 </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <?php
+                            if($model->ap_dung_cung_goi_khach_hang)
+                            {
+                                echo $form->field($model, 'ap_dung_cung_goi_khach_hang')->widget(CheckboxX::classname(), [
+                                    'autoLabel'=>true,
+                                    'value' => $model->ap_dung_cung_goi_khach_hang,
+                                    'pluginOptions'=>['threeState'=>false]
+                                ])->label(false);
+                            }else
+                            {
+                                echo $form->field($model, 'ap_dung_cung_goi_khach_hang')->widget(CheckboxX::classname(), [
+                                    'autoLabel'=>true,
+                                    'pluginOptions'=>['threeState'=>false]
+                                ])->label(false);
+                            }
+                        ?>
+                    </div>
+                </div>
         
-                <div class="row" style="margin-top: 20px">
+                <div class="row">
                     <div class="col-md-6">
-                        <p>Lựa chọn khu vực để giới hạn áp dụng gói khách hàng</p>
-                        
-                        <legend><small>Khu vực</small></legend>
+                        <legend><small>Khu vực áp dụng</small></legend>
                         <?php foreach($model->kv as $item):?>
                             <div class="form-group">
                             <label class="cbx-label" for="<?= $item['key']?>">

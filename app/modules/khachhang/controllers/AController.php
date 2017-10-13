@@ -78,6 +78,8 @@ class AController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             $dataPost = \Yii::$app->request->post();
+            //Xử lý gói khách hàng
+            $model->gkh_id = json_encode($dataPost[$model->formName()]['gkh_id'], JSON_UNESCAPED_UNICODE);
             //Xử lý model khách hàng
             ////Xử lý tính năng ẩn
             if(isset($dataPost['tna']))
@@ -244,8 +246,11 @@ class AController extends Controller
             return $this->redirect(['/admin/'.$this->module->id]);
         }
 
+        $model->gkh_id = json_decode($model->gkh_id, true);
+        
         if ($model->load(Yii::$app->request->post())) {
             $dataPost = \Yii::$app->request->post();
+            $model->gkh_id = json_encode($dataPost[$model->formName()]['gkh_id'], JSON_UNESCAPED_UNICODE);
 //            echo '<pre>';
 //            print_r($dataPost);
 //            echo '</pre>';

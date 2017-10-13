@@ -41,11 +41,14 @@ $module = $this->context->module->id;
                             <table class="table responsive-data-table table-striped">
                                 <thead>
                                     <tr>
-                                        <th width="50px">
+                                        <th width="30px">
                                             #
                                         </th>
                                         <th>
                                             Tên khách hàng
+                                        </th>
+                                        <th>
+                                            Gói KH
                                         </th>
                                         <th>
                                             Địa chỉ
@@ -231,13 +234,17 @@ $module = $this->context->module->id;
                                                     </header>
                                                     <div class="panel-body">
                                                         <div class="row">
-                                                            <div class="col-md-6 col-sm-6 col-xs-6" style="font-weight: bold">
-                                                                <?= $arr_tgtt['type']?>
-                                                            </div>
-                                                            
                                                             <?php if($arr_tgtt['type'] == 'Mỗi tuần 1 lần'):?>
+                                                                <div class="col-md-6 col-sm-6 col-xs-6" style="font-weight: bold">
+                                                                    <?= $arr_tgtt['type']?>
+                                                                </div>
+
                                                                 <div class="col-md-6 col-sm-6 col-xs-6" style="text-align: right">
                                                                     Thanh toán thứ <?= $arr_tgtt['time']?>
+                                                                </div>
+                                                            <?php else:?>
+                                                                <div class="col-md-12 col-sm-12 col-xs-12" style="font-weight: bold">
+                                                                    <?= $arr_tgtt['type']?>
                                                                 </div>
                                                             <?php endif; ?>
                                                         </div>
@@ -249,12 +256,75 @@ $module = $this->context->module->id;
                                             Modal::end();
                                         ?>
                                 
+                                        
+                                
                                         <tr data-id="<?= $item->primaryKey ?>">
                                             <td>
                                                 <a style="color : blue !important;" href="<?= Url::to(['/admin/'.$module.'/a/edit/', 'id' => $item->primaryKey]) ?>"><?= $item->primaryKey ?></a>
                                             </td>
                                             <td>
                                                 <a style="color : blue !important;" data-toggle = 'modal' data-target = '#w<?= $item->kh_id?>' href="#"><?= $item->ten_hien_thi ?></a>
+                                            </td>
+                                            <td>
+                                                <?php
+                                                    $gkh = json_decode($item->gkh_id, true);
+                                                    $str_gkh = '';
+                                                    foreach($gkh as $gkh):
+                                                ?>
+                                                    <?php
+                                                        $model_gkh = app\modules\goikhachhang\models\Goikhachhang::find()->where(['gkh_id' => $gkh])->one();
+                                                        Modal::begin([
+                                                            'header' => '<h3 style="text-align : center">Gói khách hàng '.strtoupper($model_gkh['ten_goi']).'</h3>',
+                                                            'id' => 'gkh'.$gkh,
+                                                            'size' => 'modal-lg'
+                                                        ])
+                                                    ?>
+                                                    <div class='row'>
+                                                        <div class='col-md-12'>
+                                                            <p><span style='font-weight: bold'>Hình thức khuyến mại :</span> <span><?= $model_gkh['hinh_thuc']?></span></p>
+                                                            <p><span style='font-weight: bold'>Giá trị :</span> <span><?= $model_gkh['gia_tri']?></span></p>
+                                                            <?php if($model_gkh['chi_giam_dich_vu_phu_troi'] == 1):?>
+                                                                <p><span style='font-weight: bold'>Áp dụng giảm cho dịch vụ phụ trội</span></p>
+                                                            <?php else:?>
+                                                                <p><span style='font-weight: bold'>Áp dụng giảm cho toàn bộ tiền cước</span></p>
+                                                            <?php endif;?>
+                                                            <p><span style='font-weight: bold'>Dịch vụ phụ trội :</span></p>
+                                                            <?php
+                                                                $dvpt = json_decode($model_gkh['dich_vu_phu_troi'], true);
+                                                                foreach($dvpt as $dvpt)
+                                                                {
+                                                                    if($dvpt['value'] == 1)
+                                                                    {
+                                                                        echo '<p style="padding-left : 10px">- '.$dvpt['content'].'</p>';
+                                                                    }
+                                                                }
+                                                            ?>
+                                                            <?php
+                                                                $ngay_gio_status = 0;
+                                                                if($model_gkh['day_ngay_bat_dau'] && $model_gkh['day_ngay_ket_thuc'])
+                                                                {
+                                                                    $ngay_gio_status = 1; //Áp dụng theo ngày
+                                                                }
+                                                            ?>
+                                                            <?php if($ngay_gio_status == 1):?>
+                                                            <p><span style='font-weight: bold'>Áp dụng theo ngày: </span><span>từ <?= date('d-m-Y', $model_gkh['day_ngay_bat_dau'])?> đến <?= date('d-m-Y', $model_gkh['day_ngay_ket_thuc'])?></span></p>
+                                                            <?php elseif($ngay_gio_status == 0):?>
+                                                            <p><span style='font-weight: bold'>Áp dụng theo giờ : </span><span>từ <?= date('d-m-Y', $model_gkh['hour_thoi_gian_ap_dung'])?> vào lúc <?= $model_gkh['hour_gio_ap_dung']?> giờ</span></p>
+                                                            <?php endif;?>
+                                                        </div>
+                                                    </div>
+                                                    <?php
+                                                        Modal::end();
+                                                    ?>
+                                                    
+                                                    <?php
+                                                        $ten_gkh = $model_gkh['ten_goi'];
+                                                        $new_str = '<a style="color : blue !important;" data-toggle = "modal" data-target = "#gkh'.$gkh.'" href="#">'.$ten_gkh.'</a><br>';
+                                                        $str_gkh = $str_gkh.$new_str;
+                                                    ?>
+                                                        
+                                                <?php endforeach;?>
+                                                <?php echo $str_gkh;?>
                                             </td>
                                             <td>
                                                 <?= $item->dia_chi;?>

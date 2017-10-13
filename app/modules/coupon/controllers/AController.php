@@ -222,31 +222,42 @@ class AController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $dataPost = Yii::$app->request->post();
             //Xử lý dịch vụ phụ trội JSON
-            if(isset($dataPost['dvpt']))
-            {
-                foreach($dataPost['dvpt'] as $key => $value)
-                {
-                    if($arr_dvpt[$key])
-                    {
-                        $arr_dvpt[$key]['value'] = 1;
-                    }
-                }
-                $model->dich_vu_phu_troi = json_encode($arr_dvpt, JSON_UNESCAPED_UNICODE);
-            }else
-            {
-                $model->dich_vu_phu_troi = NULL;
-            }
+//            if(isset($dataPost['dvpt']))
+//            {
+//                foreach($arr_dvpt as $item)
+//                {
+//                    $item['value'] = 0;
+//                    foreach($dataPost['dvpt'] as $key => $value)
+//                    {
+//                        if($item['key'] == $key)
+//                        {
+//                            $item['value'] = 1;
+//                        }
+//                    }
+//                    $arr_dvpt[$item['key']] = $item;                            
+//                }
+//                $model->dich_vu_phu_troi = json_encode($arr_dvpt, JSON_UNESCAPED_UNICODE);
+//            }else
+//            {
+//                $model->dich_vu_phu_troi = NULL;
+//            }
             
             //Xử lý khu vực JSON
             if(isset($dataPost['kv']))
             {
-                foreach($dataPost['kv'] as $key => $value)
+                foreach($arr_kv as $item)
                 {
-                    if($arr_kv[$key])
+                    $item['value'] = 0;
+                    foreach($dataPost['kv'] as $key => $value)
                     {
-                        $arr_kv[$key]['value'] = 1;
+                        if($item['key'] == $key)
+                        {
+                            $item['value'] = 1;
+                        }
                     }
+                    $arr_kv[$item['key']] = $item;
                 }
+                
                 $model->khu_vuc = json_encode($arr_kv, JSON_UNESCAPED_UNICODE);
             }else
             {

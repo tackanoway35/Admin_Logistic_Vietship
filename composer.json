@@ -23,7 +23,8 @@
         "kartik-v/yii2-widget-datepicker": "@dev",
         "kartik-v/yii2-field-range": "*",
         "unclead/yii2-multiple-input": "~2.0",
-        "kartik-v/yii2-widget-depdrop": "@dev"
+        "kartik-v/yii2-widget-depdrop": "@dev",
+        "kartik-v/yii2-widget-switchinput": "*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

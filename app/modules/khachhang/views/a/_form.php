@@ -121,6 +121,9 @@ $module = $this->context->module->id;
                                 'data' => ArrayHelper::map(Goikhachhang::find()->all(), 'gkh_id', 'ten_goi'),
                                 'options' => [
                                     'placeholder' => 'Chọn gói khách hàng'
+                                ],
+                                'pluginOptions' => [
+                                    'multiple' => true
                                 ]
                         ])?>
                     </div>

@@ -33,7 +33,8 @@ class Khachhang extends \yii\easyii\components\ActiveRecord implements \yii\web\
                 ], 'string', 'message' => "{attribute} phải là kiểu chuỗi"
             ],
             ['email', 'email', 'message' => "Không đúng định dạng email"],
-            [['time', 'gkh_id'], 'integer'],
+            [['time'], 'integer'],
+            ['gkh_id', 'safe'],
             ['time', 'default', 'value' => time()],
             ['slug', 'match', 'pattern' => self::$SLUG_PATTERN, 'message' => Yii::t('easyii', 'Slug can contain only 0-9, a-z and "-" characters (max: 128).')],
             ['slug', 'default', 'value' => null],
@@ -163,10 +164,5 @@ class Khachhang extends \yii\easyii\components\ActiveRecord implements \yii\web\
     public function getHinhthucthanhtoan()
     {
         return $this->hasOne(Hinhthucthanhtoan::className(), ['kh_id' => 'kh_id']);
-    }
-    
-    public function getGoikhachhang()
-    {
-        return $this->hasOne(Goikhachhang::className(), ['gkh_id' => 'gkh_id']);
     }
 }

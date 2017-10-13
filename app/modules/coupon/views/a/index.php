@@ -74,14 +74,6 @@ $module = $this->context->module->id;
                                                     foreach($arr_gdv as $gdv_id)
                                                     {
                                                         $str_gdv .= Goidichvu::find()->where(['gdv_id' => $gdv_id])->one()['ten_goi_dich_vu'].'<br>';
-                                                        
-//                                                        if($gdv_id == end($arr_gdv))
-//                                                        {
-//                                                            $str_gdv .= Goidichvu::find()->where(['gdv_id' => $gdv_id])->one()['ten_goi_dich_vu'];
-//                                                        }else
-//                                                        {
-//                                                            $str_gdv .= Goidichvu::find()->where(['gdv_id' => $gdv_id])->one()['ten_goi_dich_vu'].', ';
-//                                                        }
                                                     }
                                                     echo $str_gdv;
                                                 ?>
